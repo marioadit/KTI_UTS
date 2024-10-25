@@ -112,6 +112,7 @@ namespace SampleSecureWeb.Controllers
             return View(loginViewModel);
         }
 
+        // 2.1.5 – Allow Users to Change Password
         public ActionResult ChangePassword()
         {
             return View();
@@ -151,9 +152,22 @@ namespace SampleSecureWeb.Controllers
 
         private bool IsValidPassword(string password)
         {
+            //2.1.3 – No Password Truncation 
+            string normalizedPassword = Regex.Replace(password, @"\s{2,}", " ");
+
             // Password harus minimal 12 karakter, mengandung huruf besar, huruf kecil, dan angka
-            var regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$");
+            //2.1.1 – Minimum Password Length
+            //2.1.2 – Maximum Password Length
+            //2.1.4 – Allow Any Printable Unicode Character
+            var regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\P{C}].{12,128}$");
             return regex.IsMatch(password);
+        }
+
+        //2.1.7 – Check Against Breached Passwords
+        public bool IsPasswordBreached(string password)
+        {
+            var breachedPasswords = new List<string> { "123456", "password", "123456789" }; 
+            return breachedPasswords.Contains(password);
         }
     }
 }

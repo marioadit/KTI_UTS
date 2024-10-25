@@ -20,8 +20,9 @@
                         <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
                     <div class="form-group mb-3">
-                        <input asp-for="Password" class="form-control form-control-user" placeholder="Password"/>
+                        <input asp-for="Password" class="form-control" id="password" placeholder="Password" oninput="checkPasswordStrength()"/>
                         <span asp-validation-for="Password" class="text-danger"></span>
+                        <div id="password-strength" class="mt-2"></div> 
                     </div>
                     <div class="form-group mb-3">
                         <input asp-for="ConfirmPassword" class="form-control form-control-user" placeholder="Confirm Password"/>
@@ -40,4 +41,44 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    @* 2.1.8 – Provide Password Strength Meter *@
+    <script>
+        function checkPasswordStrength() {
+            var strength = 0;
+            var password = document.getElementById('password').value;
+            
+            
+            // Check password criteria
+            if (password.length >= 12) strength += 1;
+            if (/[A-Z]/.test(password)) strength += 1;
+            if (/[a-z]/.test(password)) strength += 1;
+            if (/[0-9]/.test(password)) strength += 1;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+            // Map strength value to text
+            var strengthText = '';
+            switch (strength) {
+                case 0:
+                case 1:
+                    strengthText = 'Very Weak';
+                    break;
+                case 2:
+                    strengthText = 'Weak';
+                    break;
+                case 3:
+                    strengthText = 'Medium';
+                    break;
+                case 4:
+                    strengthText = 'Strong';
+                    break;
+                case 5:
+                    strengthText = 'Very Strong';
+                    break;
+            }
+            
+            // Update the UI with the strength level
+            document.getElementById('password-strength').innerText = strengthText;
+        }
+    </script>
 }

@@ -5,6 +5,7 @@ namespace SampleSecureWeb.ViewModels;
 
 public class ChangePasswordViewModel
 {
+    //2.1.6 – Require Current and New Password for Change
     [Required]
     public string Username { get; set; } = string.Empty;
 
